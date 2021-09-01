@@ -34,8 +34,13 @@ run_remuxing_fragmented_mp4: make_remuxing
 make_transcoding: clean
 	docker run -w /files --rm -it  -v `pwd`:/files leandromoreira/ffmpeg-devel \
 	  gcc -g -Wall -L/opt/ffmpeg/lib -I/opt/ffmpeg/include/ /files/3_transcoding.c /files/video_debugging.c \
+		/files/utils_debugging.c \
 	  -lavcodec -lavformat -lavfilter -lavdevice -lswresample -lswscale -lavutil \
 	  -o /files/build/3_transcoding
 
 run_transcoding: make_transcoding
 	docker run -w /files --rm -it -v `pwd`:/files leandromoreira/ffmpeg-devel ./build/3_transcoding /files/small_bunny_1080p_60fps.mp4 /files/bunny_1s_gop.mp4
+
+# crashes just like seer-streamer w this file
+run_transcoding2: make_transcoding
+	docker run -w /files --rm -it -v `pwd`:/files leandromoreira/ffmpeg-devel ./build/3_transcoding /files/sample.mp4 /files/sample_trans.mp4
